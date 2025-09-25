@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<!-- saved from url=(0049)file:///C:/Users/prabh/OneDrive/Desktop/done.html -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  
+  <title>Medicine Dose Calculator - Prototype</title>
+  <style>
+    body {
+      font-family: "Segoe UI", Tahoma, sans-serif;
+      margin: 0;
+      background: linear-gradient(135deg, #f9f9ff, #e3f2fd);
+      color: #333;
+    }
+
+    header {
+      background: #1976d2;
+      color: white;
+      padding: 20px;
+      text-align: center;
+      font-size: 1.5em;
+      box-shadow: 0 3px 6px rgba(0,0,0,0.2);
+    }
+
+    .container {
+      max-width: 1000px;
+      margin: 30px auto;
+      background: white;
+      padding: 25px;
+      border-radius: 15px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+
+    h2 {
+      color: #1976d2;
+      margin-top: 0;
+    }
+
+    label {
+      font-weight: bold;
+      display: block;
+      margin: 12px 0 5px;
+    }
+
+    select, input, button {
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      width: 100%;
+      font-size: 1em;
+    }
+
+    button {
+      background: #1976d2;
+      color: white;
+      cursor: pointer;
+      margin-top: 20px;
+      transition: background 0.3s;
+    }
+    button:hover {
+      background: #0d47a1;
+    }
+
+    .output {
+      margin-top: 25px;
+      padding: 15px;
+      background: #f5f5f5;
+      border-radius: 12px;
+      border: 1px solid #ccc;
+    }
+
+    .timeline {
+      display: flex;
+      flex-wrap: wrap;
+      margin-top: 20px;
+    }
+
+    .dose-block {
+      flex: 1 0 22%;
+      margin: 10px;
+      padding: 15px;
+      background: #e3f2fd;
+      border-radius: 12px;
+      text-align: center;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      font-weight: bold;
+      position: relative;
+    }
+
+    .dose-block svg {
+      width: 30px;
+      height: 30px;
+      display: block;
+      margin: 0 auto 10px;
+    }
+
+    canvas {
+      margin-top: 20px;
+      background: #fff;
+      border: 1px solid #ccc;
+      border-radius: 10px;
+      width: 100% !important;
+      height: 300px !important;
+    }
+
+    .note {
+      margin-top: 30px;
+      font-size: 0.9em;
+      color: #555;
+      text-align: center;
+    }
+
+    .download-btn {
+      background: #388e3c;
+      margin-top: 15px;
+    }
+    .download-btn:hover {
+      background: #1b5e20;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    💊 Medicine Dose Calculator (Prototype / Educational)
+  </header>
+  <div class="container">
+    <h2>Enter Patient Details</h2>
+    <label>Patient Name:</label>
+    <input type="text" id="patientName" placeholder="Enter name">
+
+    <label>Select Medicine:</label>
+    <select id="medicine">
+      <option value="Paracetamol">Paracetamol</option>
+      <option value="Amoxicillin">Amoxicillin</option>
+      <option value="Ibuprofen">Ibuprofen</option>
+      <option value="Cough Syrup">Cough Syrup</option>
+      <option value="Vitamin D">Vitamin D</option>
+    </select>
+
+    <label>Dose (mg/ml):</label>
+    <input type="number" id="dose" placeholder="e.g. 500">
+
+    <label>Interval (hours):</label>
+    <input type="number" id="interval" placeholder="e.g. 8">
+
+    <label>Duration (days):</label>
+    <input type="number" id="days" placeholder="e.g. 5">
+
+    <button onclick="calculateDose()">Calculate Dose Plan</button>
+
+    <div id="output" class="output" style="display:none;">
+      <h3>📋 Prescription Plan</h3>
+      <p id="details"></p>
+      <div id="timeline" class="timeline"></div>
+      <canvas id="graph"></canvas>
+      <button class="download-btn" onclick="downloadPrescription()">⬇ Download Prescription</button>
+    </div>
+
+    <div class="note">
+      ⚠ Note: This is a prototype / educational tool. Always cross-check with clinical guidelines for final prescription.
+    </div>
+  </div>
+
+  <script src="./Medicine Dose Calculator - Prototype_files/chart.js.download"></script>
+  <script>
+    function calculateDose() {
+      let name = document.getElementById("patientName").value;
+      let med = document.getElementById("medicine").value;
+      let dose = document.getElementById("dose").value;
+      let interval = parseInt(document.getElementById("interval").value);
+      let days = parseInt(document.getElementById("days").value);
+
+      if(!name || !dose || !interval || !days){
+        alert("Please fill all fields!");
+        return;
+      }
+
+      let totalDoses = Math.floor((24/interval) * days);
+      document.getElementById("output").style.display = "block";
+      document.getElementById("details").innerText = 
+        `Patient: ${name}\nMedicine: ${med}\nDose: ${dose} mg/ml every ${interval} hours for ${days} days.\nTotal doses: ${totalDoses}`;
+
+      // Timeline blocks
+      let timeline = document.getElementById("timeline");
+      timeline.innerHTML = "";
+      for(let i=1; i<=totalDoses; i++){
+        let timeHr = (i * interval) % 24;
+        let block = document.createElement("div");
+        block.className = "dose-block";
+        block.innerHTML = `
+          <svg xmlns="http://www.w3.org/2000/svg" fill="#1976d2" viewBox="0 0 24 24">
+            <path d="M12 2a7 7 0 0 0-7 7v6a7 7 0 0 0 14 0V9a7 7 0 0 0-7-7zm0 2a5 5 0 0 1 5 5v1H7V9a5 5 0 0 1 5-5zm-5 8h10v3a5 5 0 0 1-10 0v-3z"/>
+          </svg>
+          Dose ${i}<br><small>@ ${timeHr}:00 hrs</small>
+        `;
+        timeline.appendChild(block);
+      }
+
+      // Graph
+      let ctx = document.getElementById("graph").getContext("2d");
+      if(window.doseChart) window.doseChart.destroy();
+      window.doseChart = new Chart(ctx, {
+        type: "line",
+        data: {
+          labels: Array.from({length: totalDoses}, (_,i)=>"Dose "+(i+1)),
+          datasets: [{
+            label: `${med} Dose Level`,
+            data: Array.from({length: totalDoses}, () => dose),
+            borderColor: "#1976d2",
+            backgroundColor: "rgba(25,118,210,0.2)",
+            tension: 0.4,
+            fill: true,
+            pointRadius: 5
+          }]
+        },
+        options: {
+          responsive: true,
+          plugins: { legend: { position: "top" } }
+        }
+      });
+
+      // Save prescription text
+      window.prescriptionText = 
+        `Patient Name: ${name}\nMedicine: ${med}\nDose: ${dose} mg/ml\nInterval: ${interval} hrs\nDuration: ${days} days\nTotal Doses: ${totalDoses}`;
+    }
+
+    function downloadPrescription() {
+      let blob = new Blob([window.prescriptionText], {type: "text/plain"});
+      let link = document.createElement("a");
+      link.href = URL.createObjectURL(blob);
+      link.download = "Prescription.txt";
+      link.click();
+    }
+  </script>
+
+
+</body></html>
