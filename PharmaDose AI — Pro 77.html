@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<!-- saved from url=(0049)file:///C:/Users/prabh/OneDrive/Desktop/hhhh.html -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>PharmaDose AI — Pro</title>
+
+<!-- Chart.js (CDN) -->
+<script src="./PharmaDose AI — Pro 77_files/chart.umd.min.js.download"></script>
+
+<!-- Fonts -->
+<link href="./PharmaDose AI — Pro 77_files/css2" rel="stylesheet">
+
+<style>
+  :root{
+    --bg-1:#071428;
+    --bg-2:#082a50;
+    --glass: rgba(255,255,255,0.06);
+    --accent1:#4cc9f0;
+    --accent2:#4f46e5;
+    --card-bg: rgba(255,255,255,0.04);
+    --muted: #9fb3c8;
+    --success: #10b981;
+    --warning: #f59e0b;
+    --danger: #ef4444;
+  }
+
+  *{box-sizing:border-box;font-family:Inter,system-ui,-apple-system,'Segoe UI',Roboto,Arial;}
+  html,body{height:100%;margin:0;background:linear-gradient(160deg,var(--bg-1),var(--bg-2));color:#e6f2ff}
+  a{color:inherit}
+  /* Page wrapper */
+  .stage{min-height:100vh;padding:40px;display:flex;align-items:center;justify-content:center}
+  /* Main container */
+  .app{
+    width:1100px;max-width:96%;display:grid;grid-template-columns:1fr 420px;gap:26px;
+    background:linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.02));
+    border-radius:16px;padding:22px;box-shadow:0 30px 80px rgba(2,6,23,0.6);backdrop-filter: blur(6px);
+  }
+  @media (max-width:1080px){ .app{grid-template-columns:1fr} }
+
+  /* LEFT: hero + form */
+  .hero{padding:18px;border-radius:12px;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));}
+  .brand{display:flex;align-items:center;gap:14px}
+  .brand .logo{
+    width:62px;height:62px;border-radius:12px;background:linear-gradient(135deg,var(--accent1),var(--accent2));display:flex;align-items:center;justify-content:center;font-weight:800;font-size:20px;color:#021025;box-shadow:0 10px 30px rgba(79,70,229,0.14);
+  }
+  .brand h1{font-size:22px;margin:0;color:#e6fbff;letter-spacing:0.2px}
+  .brand p{margin:4px 0 12px;color:var(--muted);font-size:13px}
+
+  /* animated pill */
+  .visual{display:flex;align-items:center;gap:18px;margin-top:10px}
+  .pill{
+    width:220px;height:220px;border-radius:28px;background:linear-gradient(160deg,#ffffff,#f5fdff);box-shadow: 0 30px 60px rgba(2,6,23,0.45) inset, 0 20px 50px rgba(0,0,0,0.45);
+    display:flex;align-items:center;justify-content:center;transform-style:preserve-3d;transition:transform .6s;
+  }
+  .pill:hover{transform:rotateY(18deg) translateY(-8px)}
+  .stripe{width:150px;height:80px;border-radius:28px;background:linear-gradient(90deg,var(--accent1),var(--accent2));box-shadow:0 8px 28px rgba(79,70,229,0.18)}
+
+  /* Form */
+  .form{margin-top:16px;padding:12px}
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  .full{grid-column:1/-1}
+  label{display:block;margin-bottom:6px;font-size:13px;color:var(--muted)}
+  input,select{width:100%;padding:12px;border-radius:10px;background:transparent;border:1px solid rgba(255,255,255,0.06);color:#eaf6ff;font-size:14px}
+  select option{color:#021025}
+  .ctaRow{display:flex;gap:10px;margin-top:12px}
+  .btn{flex:1;padding:12px;border-radius:10px;border:none;cursor:pointer;font-weight:700}
+  .btn-primary{background:linear-gradient(90deg,var(--accent1),var(--accent2));color:#021025;box-shadow:0 10px 30px rgba(79,70,229,0.12)}
+  .btn-ghost{background:transparent;border:1px solid rgba(255,255,255,0.06);color:var(--muted)}
+  .note{margin-top:12px;padding:10px;border-radius:10px;background:rgba(255,255,255,0.02);color:var(--muted);font-size:13px}
+
+  /* RIGHT: panel */
+  .panel{padding:14px;border-radius:12px;background:linear-gradient(180deg, rgba(255,255,255,0.015), rgba(255,255,255,0.01));}
+  .panel h3{margin:0 0 8px;color:var(--accent2)}
+  .resultCard{margin-top:8px;padding:12px;border-radius:10px;background:rgba(255,255,255,0.02)}
+  .row{display:flex;justify-content:space-between;align-items:center}
+  .muted{color:var(--muted);font-size:13px}
+  .big{font-size:20px;font-weight:800;color:#e8fbff}
+  .summary{margin-top:8px;color:var(--muted)}
+
+  /* timeline */
+  .timeline{display:flex;flex-wrap:wrap;gap:12px;margin-top:12px}
+  .doseCard{
+    width:180px;padding:12px;border-radius:12px;display:flex;flex-direction:column;gap:8px;box-shadow:0 12px 30px rgba(2,6,23,0.35);
+    font-weight:700;color:#021025;align-items:flex-start;
+  }
+  .doseCard .small{font-size:13px;color:rgba(0,0,0,0.6);font-weight:600}
+  .doseCard.safe{background:linear-gradient(90deg,#bbf7d0,#86efac)}
+  .doseCard.warn{background:linear-gradient(90deg,#fff7cc,#ffe08a)}
+  .doseCard.danger{background:linear-gradient(90deg,#ffb3b3,#ff7b7b)}
+
+  /* pill icon container */
+  .iconWrap{width:44px;height:44px;border-radius:10px;background:rgba(255,255,255,0.9);display:flex;align-items:center;justify-content:center;box-shadow:0 6px 18px rgba(0,0,0,0.12)}
+
+  /* chart */
+  .chartBox{margin-top:14px;background:rgba(255,255,255,0.02);padding:10px;border-radius:10px}
+  canvas{max-width:100%;height:220px}
+
+  /* footer - single moving line */
+  footer{position:fixed;left:0;right:0;bottom:10px;pointer-events:none;z-index:60}
+  .marquee{width:100%;overflow:hidden}
+  .marquee .txt{display:inline-block;white-space:nowrap;animation:marq 12s linear infinite;color:#ffd166;font-weight:800}
+  @keyframes marq{0%{transform:translateX(100%)}100%{transform:translateX(-100%)}}
+
+  /* small print styles */
+  @media print{
+    body{background:white;color:black}
+    .app{box-shadow:none;border:none;grid-template-columns:1fr}
+    .pill,.btn,.marquee{display:none}
+  }
+</style>
+</head>
+<body>
+  <div class="stage">
+    <div class="app" role="application" aria-label="PharmaDose AI">
+      <!-- LEFT -->
+      <div>
+        <div class="hero">
+          <div class="brand">
+            <div class="logo">PD</div>
+            <div>
+              <h1>PharmaDose AI</h1>
+              <p class="muted">Professional prototype — accurate scheduling, split dosing and printable output</p>
+            </div>
+          </div>
+
+          <div class="visual" style="margin-top:14px">
+            <div class="pill" aria-hidden="true"><div class="stripe"></div></div>
+            <div style="flex:1;text-align:left">
+              <div style="font-weight:800;font-size:18px;color:#e7fbff">Why this is ideal for your project</div>
+              <ul style="color:var(--muted);margin-top:8px;line-height:1.6">
+                <li>Auto-split doses to respect per-dose limits</li>
+                <li>Clear print &amp; download options for submission</li>
+                <li>Attractive UI ready for demo/college presentation</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="form">
+            <div class="grid" role="form" aria-label="patient form">
+              <div>
+                <label for="patientName">Patient name</label>
+                <input id="patientName" type="text" placeholder="Prabhat Choudhary">
+              </div>
+              <div>
+                <label for="sex">Sex</label>
+                <select id="sex"><option>Male</option><option>Female</option></select>
+              </div>
+
+              <div>
+                <label for="age">Age (years)</label>
+                <input id="age" type="number" min="0" placeholder="e.g., 20">
+              </div>
+              <div>
+                <label for="height">Height (cm)</label>
+                <input id="height" type="number" min="0" placeholder="e.g., 170">
+              </div>
+
+              <div>
+                <label for="weight">Weight (kg)</label>
+                <input id="weight" type="number" min="0" placeholder="e.g., 65">
+              </div>
+              <div>
+                <label for="medicine">Medicine</label>
+                <select id="medicine" aria-label="medicine select">
+                  <option value="">-- Select medicine --</option>
+                  <option value="paracetamol">Paracetamol (Acetaminophen)</option>
+                  <option value="amoxicillin">Amoxicillin</option>
+                  <option value="azithromycin">Azithromycin</option>
+                  <option value="ibuprofen">Ibuprofen</option>
+                  <option value="ciprofloxacin">Ciprofloxacin</option>
+                </select>
+              </div>
+
+              <div class="full">
+                <div class="note">Note - this is a prototype / educational tool. Always cross check with clinical guidelines for final prescription.</div>
+              </div>
+            </div>
+
+            <div class="ctaRow" style="margin-top:12px">
+              <button class="btn btn-primary" onclick="onCalculate()">Calculate &amp; Recommend</button>
+              <button class="btn btn-ghost" onclick="onPrint()">Print (A4)</button>
+              <button class="btn btn-ghost" onclick="downloadChart()">Download Chart</button>
+            </div>
+            <div id="status" class="muted" style="margin-top:8px"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- RIGHT: results + chart -->
+      <div class="panel" aria-live="polite">
+        <h3>Recommended schedule</h3>
+
+        <div id="resultCard" class="resultCard">
+          <div class="row">
+            <div>
+              <div class="muted">Patient</div>
+              <div id="patientLabel" style="font-weight:800;color:#eafcff">jhuy • 66 yrs • 186 cm • 78 kg</div>
+            </div>
+            <div style="text-align:right">
+              <div class="muted">Total daily</div>
+              <div id="totalLabel" class="big">903.37 mg</div>
+            </div>
+          </div>
+
+          <div id="summary" class="summary">Split into 2 time(s) per day • Interval ≈ 12 hours • Medicine: Paracetamol (Acetaminophen)</div>
+
+          <div id="timeline" class="timeline" aria-label="dose timeline"><div class="doseCard safe">
+      <div style="display:flex;gap:10px;align-items:center">
+        <div class="iconWrap"><svg viewBox="0 0 24 24" width="28" height="28" fill="#021025" xmlns="http://www.w3.org/2000/svg"><path d="M20.59 7.41a5 5 0 0 0-7.07 0L6.34 14.59a5 5 0 1 0 7.07 7.07l7.17-7.17a5 5 0 0 0 0-7.07zM7.5 3a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5z"></path></svg></div>
+        <div style="text-align:left">
+          <div class="small">Dose 1</div>
+          <div style="font-weight:900;font-size:16px">451.68 mg</div>
+        </div>
+      </div>
+      <div class="small" style="margin-top:6px">12 h interval</div>
+    </div><div class="doseCard safe">
+      <div style="display:flex;gap:10px;align-items:center">
+        <div class="iconWrap"><svg viewBox="0 0 24 24" width="28" height="28" fill="#021025" xmlns="http://www.w3.org/2000/svg"><path d="M20.59 7.41a5 5 0 0 0-7.07 0L6.34 14.59a5 5 0 1 0 7.07 7.07l7.17-7.17a5 5 0 0 0 0-7.07zM7.5 3a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5z"></path></svg></div>
+        <div style="text-align:left">
+          <div class="small">Dose 2</div>
+          <div style="font-weight:900;font-size:16px">451.68 mg</div>
+        </div>
+      </div>
+      <div class="small" style="margin-top:6px">12 h interval</div>
+    </div></div>
+
+          <div id="chartBox" class="chartBox" style="margin-top: 12px; display: block;">
+            <canvas id="doseChart" height="290" style="box-sizing: border-box; display: block; height: 232px; width: 348px;" width="435"></canvas>
+            <div style="display:flex;gap:8px;margin-top:10px">
+              <button class="btn btn-primary" onclick="saveLocalCopy()">Save JSON (local)</button>
+              <button class="btn btn-ghost" onclick="onSaveToServer()">Save to Server</button>
+            </div>
+          </div>
+        </div>
+
+        <div id="empty" style="color: var(--muted); margin-top: 8px; display: none;">No schedule yet — fill form and click Calculate.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- footer moving line -->
+  <footer aria-hidden="true">
+    <div class="marquee"><span class="txt">Made by Prabhat Choudhary — PharmaDose AI</span></div>
+  </footer>
+
+<script>
+/* ====== Data ====== */
+/* mg/kg/day, maxPerDose (mg), maxDaily (mg) */
+const medicineData = {
+  paracetamol: {dose:15, maxPerDose:650, maxDaily:4000, label:'Paracetamol (Acetaminophen)', icon:'pill'},
+  amoxicillin: {dose:20, maxPerDose:500, maxDaily:1500, label:'Amoxicillin', icon:'bottle'},
+  azithromycin: {dose:10, maxPerDose:500, maxDaily:1500, label:'Azithromycin', icon:'pill'},
+  ibuprofen: {dose:10, maxPerDose:400, maxDaily:1200, label:'Ibuprofen', icon:'pill'},
+  ciprofloxacin: {dose:15, maxPerDose:500, maxDaily:1500, label:'Ciprofloxacin', icon:'bottle'}
+};
+
+let chartInstance = null;
+
+/* ====== Helpers ====== */
+function fmt(n){ return Number(n).toFixed(2); }
+function clamp(v,min,max){ return Math.max(min,Math.min(max,v)); }
+function estimateWeight(heightCm, ageYears){
+  if(!heightCm) return 20;
+  const base = Math.max(10, heightCm - 100);
+  const ageFactor = (ageYears && ageYears > 0) ? (ageYears / 10) : 1;
+  return Math.round((base + ageFactor) * 10) / 10;
+}
+function calcBSA(heightCm, weightKg){
+  return Math.sqrt((heightCm * weightKg) / 3600);
+}
+
+/* Compute total daily dose internally:
+   prioritize height -> BSA, else weight -> weight-based, else age-based approx */
+function computeTotalDailyDose(age, weight, height, medKey){
+  const med = medicineData[medKey];
+  if(!med) return null;
+  let total = 0;
+
+  if(height){ // BSA internal
+    const w = weight || estimateWeight(height, age);
+    const bsa = calcBSA(height, w);
+    total = med.dose * bsa * 30; // heuristic conversion
+  } else if(weight){
+    total = med.dose * weight;
+  } else if(age != null && !isNaN(age)){
+    if(age < 1) total = (age * 12 / 24) * med.dose;
+    else if(age <= 12) total = (age / (age + 12)) * med.dose * 20;
+    else total = med.dose;
+  } else {
+    return null;
+  }
+
+  if(total > med.maxDaily) total = med.maxDaily;
+  return total;
+}
+
+/* Split into practical dosing schedules */
+function splitDoses(totalDaily, medKey){
+  const med = medicineData[medKey];
+  if(!med) return [];
+  if(totalDaily <= med.maxPerDose) return [totalDaily];
+
+  const preferred = [2,3,4,6];
+  for(let t of preferred){
+    const per = totalDaily / t;
+    if(per <= med.maxPerDose) return Array.from({length:t}, ()=>per);
+  }
+  const times = Math.ceil(totalDaily / med.maxPerDose);
+  const per = totalDaily / times;
+  return Array.from({length:times}, ()=>per);
+}
+
+/* ====== UI Actions ====== */
+function onCalculate(){
+  const name = (document.getElementById('patientName').value || 'Patient').trim();
+  const ageVal = document.getElementById('age').value; const age = ageVal !== '' ? Number(ageVal) : null;
+  const weightVal = document.getElementById('weight').value; const weight = weightVal !== '' ? Number(weightVal) : null;
+  const heightVal = document.getElementById('height').value; const height = heightVal !== '' ? Number(heightVal) : null;
+  const medSelect = document.getElementById('medicine'); const medKeyRaw = medSelect.value;
+  const medKey = medKeyRaw ? medKeyRaw.toLowerCase() : '';
+
+  document.getElementById('status').innerText = '';
+
+  if(!medKey){ alert('Please select a medicine.'); return; }
+
+  const total = computeTotalDailyDose(age, weight, height, medKey);
+  if(total === null){ alert('Enter at least age, weight or height.'); return; }
+
+  const med = medicineData[medKey];
+  const doses = splitDoses(total, medKey);
+  const times = doses.length;
+  const interval = Math.floor(24 / Math.max(1, times));
+
+  // render result
+  document.getElementById('empty').style.display = 'none';
+  const rc = document.getElementById('resultCard'); rc.hidden = false;
+  document.getElementById('patientLabel').innerText = `${name} • ${age!=null?age+' yrs':'—'} • ${height?height+' cm':'—'} • ${weight?weight+' kg':'—'}`;
+  document.getElementById('totalLabel').innerText = `${fmt(total)} mg`;
+  document.getElementById('summary').innerText = `Split into ${times} time(s) per day • Interval ≈ ${interval} hours • Medicine: ${med.label}`;
+
+  // Timeline with icons
+  const timeline = document.getElementById('timeline'); timeline.innerHTML = '';
+  doses.forEach((d,i)=>{
+    const pct = d / med.maxPerDose;
+    let cls = 'doseCard safe';
+    if(pct >= 1) cls = 'doseCard danger';
+    else if(pct >= 0.8) cls = 'doseCard warn';
+    const div = document.createElement('div'); div.className = cls;
+
+    // icon
+    const iconHtml = med.icon === 'pill' ? pillSVG('#021025') : bottleSVG('#021025');
+
+    div.innerHTML = `
+      <div style="display:flex;gap:10px;align-items:center">
+        <div class="iconWrap">${iconHtml}</div>
+        <div style="text-align:left">
+          <div class="small">Dose ${i+1}</div>
+          <div style="font-weight:900;font-size:16px">${fmt(d)} mg</div>
+        </div>
+      </div>
+      <div class="small" style="margin-top:6px">${interval} h interval</div>
+    `;
+    timeline.appendChild(div);
+  });
+
+  // Chart: colorful gradient + labels
+  const chartBox = document.getElementById('chartBox'); chartBox.style.display = 'block';
+  const ctx = document.getElementById('doseChart').getContext('2d');
+  if(chartInstance) { chartInstance.destroy(); chartInstance = null; }
+  const colors = doses.map(d => {
+    const pct = d / med.maxPerDose;
+    if(pct >= 1) return '#ef4444';
+    if(pct >= 0.8) return '#f59e0b';
+    return '#10b981';
+  });
+  chartInstance = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: doses.map((_,i)=>`Dose ${i+1}`),
+      datasets: [{
+        label: med.label + ' (mg)',
+        data: doses.map(d=>Number(d.toFixed(2))),
+        backgroundColor: colors,
+        borderRadius: 8,
+        barPercentage: 0.6
+      }]
+    },
+    options: {
+      responsive:true,
+      plugins:{
+        legend:{display:false},
+        tooltip:{callbacks:{label: (ctx)=> `${ctx.dataset.label}: ${ctx.formattedValue} mg`}}
+      },
+      scales:{ y:{beginAtZero:true,title:{display:true,text:'mg'}}}
+    }
+  });
+
+  // save local history automatically
+  saveLocalAuto({name,age,height,weight,medKey,total,doses,interval,time:Date.now()});
+}
+
+/* print */
+function onPrint(){ window.print(); }
+
+/* download chart */
+function downloadChart(){
+  if(!chartInstance){ alert('Generate chart first'); return; }
+  const url = chartInstance.toBase64Image();
+  const a = document.createElement('a'); a.href = url; a.download = 'dose_chart.png'; a.click();
+}
+
+/* save local JSON */
+function saveLocalCopy(){
+  const hist = JSON.parse(localStorage.getItem('pharmadose_history') || '[]');
+  if(!hist.length){ alert('No schedule to save. Generate first.'); return; }
+  const last = hist[0];
+  const blob = new Blob([JSON.stringify(last,null,2)], {type:'application/json'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a'); a.href = url; a.download = `schedule_${(last.name||'patient').replace(/\s+/g,'_')}.json`; a.click();
+  URL.revokeObjectURL(url);
+}
+
+/* auto-save locally */
+function saveLocalAuto(obj){
+  try{
+    const arr = JSON.parse(localStorage.getItem('pharmadose_history') || '[]');
+    arr.unshift(obj);
+    if(arr.length>50) arr.pop();
+    localStorage.setItem('pharmadose_history', JSON.stringify(arr));
+    document.getElementById('status').innerText = 'Saved locally.';
+    setTimeout(()=>document.getElementById('status').innerText = '', 2000);
+  }catch(e){ console.warn(e); }
+}
+
+/* server save (attempt) */
+async function onSaveToServer(){
+  const hist = JSON.parse(localStorage.getItem('pharmadose_history') || '[]');
+  if(!hist.length){ alert('No schedule to send. Generate first.'); return; }
+  const last = hist[0];
+  document.getElementById('status').innerText = 'Sending to server...';
+  try{
+    // Replace URL with your endpoint if available
+    const resp = await fetch('https://example.com/api/saveSchedule', {
+      method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(last)
+    });
+    if(!resp.ok) throw new Error('Server responded ' + resp.status);
+    document.getElementById('status').innerText = 'Saved to server.';
+  }catch(err){
+    console.warn(err);
+    // fallback store
+    const fallback = JSON.parse(localStorage.getItem('pharmadose_fallback')||'[]');
+    fallback.unshift({...last, error:String(err), time:Date.now()});
+    if(fallback.length>100) fallback.pop();
+    localStorage.setItem('pharmadose_fallback', JSON.stringify(fallback));
+    document.getElementById('status').innerText = 'Server not reachable — saved as fallback locally.';
+  }
+  setTimeout(()=>document.getElementById('status').innerText = '',2500);
+}
+
+/* init prefill last */
+(function init(){
+  const hist = JSON.parse(localStorage.getItem('pharmadose_history') || '[]');
+  if(hist.length){
+    const last = hist[0];
+    if(last.name) document.getElementById('patientName').value = last.name;
+    if(last.age!=null) document.getElementById('age').value = last.age;
+    if(last.height) document.getElementById('height').value = last.height;
+    if(last.weight) document.getElementById('weight').value = last.weight;
+    if(last.medKey) document.getElementById('medicine').value = last.medKey;
+  }
+})();
+
+/* small svg icons */
+function pillSVG(fill='#021025'){
+  return `<svg viewBox="0 0 24 24" width="28" height="28" fill="${fill}" xmlns="http://www.w3.org/2000/svg"><path d="M20.59 7.41a5 5 0 0 0-7.07 0L6.34 14.59a5 5 0 1 0 7.07 7.07l7.17-7.17a5 5 0 0 0 0-7.07zM7.5 3a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5z"/></svg>`;
+}
+function bottleSVG(fill='#021025'){
+  return `<svg viewBox="0 0 24 24" width="28" height="28" fill="${fill}" xmlns="http://www.w3.org/2000/svg"><path d="M7 2h10v2h2v2h-1v13a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2V6H5V4h2V2zm2 6h6v2H9V8z"/></svg>`;
+}
+</script>
+
+
+</body></html>
