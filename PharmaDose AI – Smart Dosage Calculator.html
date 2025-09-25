@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<!-- saved from url=(0054)file:///C:/Users/prabh/OneDrive/Desktop/myproject.html -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  
+  <title>PharmaDose AI – Smart Dosage Calculator</title>
+  <script src="./PharmaDose AI – Smart Dosage Calculator_files/chart.js.download"></script>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(135deg, #1c1c2b, #3a3a66);
+      color: #fff;
+      overflow-x: hidden;
+    }
+    header {
+      text-align: center;
+      padding: 20px;
+      background: #222;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.6);
+    }
+    header h1 {
+      font-size: 2.3em;
+      color: #6cf;
+      text-shadow: 0 0 15px #6cf;
+      margin: 0;
+    }
+    header p {
+      font-size: 1.1em;
+      color: #bbb;
+      margin-top: 5px;
+    }
+    .container {
+      max-width: 950px;
+      margin: 30px auto;
+      padding: 20px;
+      background: rgba(255,255,255,0.05);
+      border-radius: 12px;
+      box-shadow: 0 6px 25px rgba(0,0,0,0.5);
+    }
+    label {
+      display: block;
+      margin-top: 15px;
+      font-weight: bold;
+      color: #9cf;
+    }
+    input, select {
+      width: 100%;
+      padding: 10px;
+      border-radius: 8px;
+      border: none;
+      margin-top: 5px;
+      font-size: 1em;
+    }
+    button {
+      margin-top: 20px;
+      padding: 12px 25px;
+      background: #6cf;
+      border: none;
+      border-radius: 8px;
+      font-size: 1.1em;
+      font-weight: bold;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+    button:hover { background: #48aaff; }
+    #result, #timeline, #chartContainer {
+      margin-top: 25px;
+      padding: 20px;
+      background: rgba(0,0,0,0.4);
+      border-radius: 10px;
+    }
+    .dose-block {
+      display: inline-block;
+      margin: 10px;
+      padding: 10px 15px;
+      border-radius: 10px;
+      background: #444;
+      color: #fff;
+      position: relative;
+    }
+    .dose-block svg {
+      width: 24px;
+      height: 24px;
+      vertical-align: middle;
+      margin-right: 5px;
+      fill: #6cf;
+    }
+    footer {
+      margin-top: 40px;
+      text-align: center;
+      padding: 15px;
+      background: #111;
+      font-size: 1em;
+      color: #6cf;
+      animation: glow 2s linear infinite;
+    }
+    @keyframes glow {
+      0% { text-shadow: 0 0 5px #6cf; }
+      50% { text-shadow: 0 0 20px #6cf; }
+      100% { text-shadow: 0 0 5px #6cf; }
+    }
+    canvas { background: #222; border-radius: 8px; padding: 10px; }
+    .note {
+      margin-top: 15px;
+      font-size: 0.9em;
+      color: #f88;
+      font-style: italic;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>💊 PharmaDose AI</h1>
+    <p>Smart Dosage Calculator – Prototype</p>
+  </header>
+
+  <div class="container">
+    <h2>Enter Patient Details</h2>
+    <label>Patient Name</label>
+    <input type="text" id="name" placeholder="Enter patient name">
+
+    <label>Age (years)</label>
+    <input type="number" id="age" placeholder="Enter age">
+
+    <label>Weight (kg)</label>
+    <input type="number" id="weight" placeholder="Enter weight">
+
+    <label>Height (cm)</label>
+    <input type="number" id="height" placeholder="Enter height">
+
+    <label>Medicine</label>
+    <select id="medicine">
+      <option value="">-- Select Medicine --</option>
+      <option value="Amoxicillin">Amoxicillin</option>
+      <option value="Paracetamol">Paracetamol</option>
+      <option value="Azithromycin">Azithromycin</option>
+      <option value="Ibuprofen">Ibuprofen</option>
+      <option value="Ciprofloxacin">Ciprofloxacin</option>
+    </select>
+
+    <button onclick="calculateDose()">💊 Calculate Dose</button>
+    <button onclick="downloadDetails()">⬇ Download Report</button>
+
+    <div id="result"><h3>Patient: pp</h3>
+       <p>Medicine: <b>Paracetamol</b></p>
+       <p>Total Daily Dose: 1320 mg</p>
+       <p>Per Dose: 330 mg × 4 times/day</p></div>
+    <div id="timeline"><h3>Schedule</h3>
+        <div class="dose-block">
+          <svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 100 20 10 10 0 000-20zm0 18a8 8 0 110-16 8 8 0 010 16z"></path><path d="M11 6h2v6h-2zM11 14h2v2h-2z"></path></svg>
+          Paracetamol – 330 mg @ 0:00
+        </div>
+        <div class="dose-block">
+          <svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 100 20 10 10 0 000-20zm0 18a8 8 0 110-16 8 8 0 010 16z"></path><path d="M11 6h2v6h-2zM11 14h2v2h-2z"></path></svg>
+          Paracetamol – 330 mg @ 6:00
+        </div>
+        <div class="dose-block">
+          <svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 100 20 10 10 0 000-20zm0 18a8 8 0 110-16 8 8 0 010 16z"></path><path d="M11 6h2v6h-2zM11 14h2v2h-2z"></path></svg>
+          Paracetamol – 330 mg @ 12:00
+        </div>
+        <div class="dose-block">
+          <svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 100 20 10 10 0 000-20zm0 18a8 8 0 110-16 8 8 0 010 16z"></path><path d="M11 6h2v6h-2zM11 14h2v2h-2z"></path></svg>
+          Paracetamol – 330 mg @ 18:00
+        </div></div>
+    <div id="chartContainer">
+      <canvas id="doseChart" width="1137" height="568" style="display: block; box-sizing: border-box; height: 455px; width: 910px;"></canvas>
+    </div>
+    <p class="note">⚠ Note – This is a prototype / educational tool. Always cross-check with clinical guidelines before final prescription.</p>
+  </div>
+
+  <footer>
+    🚀 Made by <strong>Prabhat Choudhary</strong>
+  </footer>
+
+<script>
+  const medData = {
+    "Amoxicillin": {dose: 20, max: 500, freq: 3},
+    "Paracetamol": {dose: 15, max: 650, freq: 4},
+    "Azithromycin": {dose: 10, max: 500, freq: 1},
+    "Ibuprofen": {dose: 10, max: 400, freq: 3},
+    "Ciprofloxacin": {dose: 15, max: 500, freq: 2}
+  };
+
+  function calculateBSA(h, w) {
+    return Math.sqrt((h*w)/3600).toFixed(2);
+  }
+
+  function calculateDose(){
+    const name=document.getElementById("name").value;
+    const age=+document.getElementById("age").value;
+    const weight=+document.getElementById("weight").value;
+    const height=+document.getElementById("height").value;
+    const med=document.getElementById("medicine").value;
+
+    if(!med){alert("Select medicine");return;}
+
+    let medInfo=medData[med];
+    let totalDose=0;
+
+    if(weight && height){
+      totalDose=weight*medInfo.dose;
+    } else if(height && !weight){
+      const estWeight=height-100+(age/10);
+      const bsa=calculateBSA(height,estWeight);
+      totalDose=medInfo.dose*bsa*30;
+    } else if(weight){
+      totalDose=weight*medInfo.dose;
+    } else if(age){
+      if(age<1){ totalDose=(age*12/24)*medInfo.dose; }
+      else if(age<=12){ totalDose=(age/(age+12))*medInfo.dose*20; }
+      else { totalDose=medInfo.dose; }
+    } else {
+      alert("Enter patient data"); return;
+    }
+
+    let perDose=Math.min(medInfo.max,totalDose/medInfo.freq).toFixed(0);
+
+    document.getElementById("result").innerHTML=
+      `<h3>Patient: ${name}</h3>
+       <p>Medicine: <b>${med}</b></p>
+       <p>Total Daily Dose: ${totalDose.toFixed(0)} mg</p>
+       <p>Per Dose: ${perDose} mg × ${medInfo.freq} times/day</p>`;
+
+    renderTimeline(med, perDose, medInfo.freq);
+    renderChart(perDose, medInfo.freq);
+  }
+
+  function renderTimeline(med, perDose, freq){
+    const timeline=document.getElementById("timeline");
+    timeline.innerHTML="<h3>Schedule</h3>";
+    const interval=24/freq;
+    for(let i=0;i<freq;i++){
+      const time=(i*interval)+":00";
+      timeline.innerHTML+=`
+        <div class="dose-block">
+          <svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 100 20 10 10 0 000-20zm0 18a8 8 0 110-16 8 8 0 010 16z"/><path d="M11 6h2v6h-2zM11 14h2v2h-2z"/></svg>
+          ${med} – ${perDose} mg @ ${time}
+        </div>`;
+    }
+  }
+
+  function renderChart(perDose,freq){
+    const ctx=document.getElementById('doseChart').getContext('2d');
+    new Chart(ctx,{
+      type:'bar',
+      data:{labels:Array.from({length:freq},(_,i)=>`Dose ${i+1}`),
+            datasets:[{label:'Dose (mg)',data:Array(freq).fill(perDose),backgroundColor:'#6cf'}]},
+      options:{plugins:{legend:{display:false}}}
+    });
+  }
+
+  function downloadDetails(){
+    const content=document.getElementById("result").innerText+
+                   "\n\n"+document.getElementById("timeline").innerText;
+    const blob=new Blob([content],{type:"text/plain"});
+    const link=document.createElement("a");
+    link.href=URL.createObjectURL(blob);
+    link.download="dose_report.txt";
+    link.click();
+  }
+</script>
+
+
+</body></html>
